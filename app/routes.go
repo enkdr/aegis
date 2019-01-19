@@ -17,6 +17,6 @@ func (app *App) InitializeRoutes() {
 
 	app.Router.HandleFunc("/newuser", app.newUser).Methods("POST")
 
-	fmt.Printf("app: %s\n", app.Config.Appname)
+	fmt.Printf("%s running on port: %d\n", app.Config.Appname, app.Config.Port)
 
 }

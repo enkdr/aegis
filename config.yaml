@@ -1,7 +1,7 @@
-appname: aegis
+appname: Aegis
 company: enkoder
 port: 8000
-hobbies:
-- skateboarding
-- snowboarding
-- go
+# somevals:
+# - oneval
+# - twoval
+# - threeval

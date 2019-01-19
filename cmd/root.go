@@ -51,9 +51,9 @@ to quickly create a Cobra application.`,
 
 		// fmt.Printf("app: %s\n", viper.Get("appname"))
 
-		var C app.Conf
+		var Configuration app.Conf
 
-		err = viper.Unmarshal(&C)
+		err = viper.Unmarshal(&Configuration)
 		if err != nil {
 			fmt.Printf("unable to decode into struct, %v", err)
 		}
@@ -62,7 +62,7 @@ to quickly create a Cobra application.`,
 			Database: database,
 			Router:   mux.NewRouter(),
 			Tmpl:     template.Must(template.ParseGlob("templates/*.tmpl")),
-			Config:   C,
+			Config:   Configuration,
 		}
 
 		app.InitializeRoutes()
