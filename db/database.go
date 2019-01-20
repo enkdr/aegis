@@ -13,12 +13,14 @@ import (
 
 func CreateDatabase() (*sqlx.DB, error) {
 
-	connStr := "user=dev dbname=miniguide password=dev sslmode=disable"
+	connStr := "user=dev password=dev sslmode=disable"
+
 	db, err := sqlx.Open("postgres", connStr)
 
+	_, err = db.Exec("CREATE DATABASE aegis")
+
 	if err != nil {
-		log.Fatal(err)
-		return nil, err
+		fmt.Printf(" CREATE DATABASE failed with error: %s\n", err)
 	}
 
 	if err = db.Ping(); err != nil {

@@ -11,10 +11,11 @@ import (
 )
 
 type User struct {
-	ID         int       `json:"id"`
-	Username   string    `json:"username"`
-	Department string    `json:"department"`
-	Created    time.Time `json:"created"`
+	ID        int       `json:"id"`
+	Firstname string    `json:"firstname"`
+	Lastname  string    `json:"lastname"`
+	Email     string    `json:"email"`
+	Created   time.Time `json:"created"`
 }
 
 func (app *App) getUser(w http.ResponseWriter, r *http.Request, api bool) {
@@ -25,29 +26,31 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request, api bool) {
 		log.Fatal("No id requested")
 	}
 
-	user := &User{}
+	// user := &User{}
 
-	err := app.Database.QueryRow("SELECT id, created, username, department FROM  userinfo WHERE id = $1", id).
-		Scan(&user.ID, &user.Created, &user.Username, &user.Department)
+	var u User
+	err := app.Database.QueryRowx("SELECT firstname FROM account WHERE id = $1", id).
+		StructScan(&u)
 	if err != nil {
 		log.Fatal("Database SELECT failed")
 	}
 
 	if api == true {
 		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(user); err != nil {
+		if err := json.NewEncoder(w).Encode(u); err != nil {
 			panic(err)
 		}
 		return
 	}
-	app.Tmpl.ExecuteTemplate(w, "user.tmpl", user)
+	app.Tmpl.ExecuteTemplate(w, "user.tmpl", u)
 }
 
 func (app *App) newUser(w http.ResponseWriter, r *http.Request) {
 
-	user := "Dev"
-	dep := "Sysadmin"
-	_, err := app.Database.Exec("INSERT INTO userinfo (username,department) VALUES ($1,$2)", user, dep)
+	firstname := "Dev"
+	lastname := "Enkoder"
+	email := "dev@enkoder.com.au"
+	_, err := app.Database.Exec("INSERT INTO account (firstname,lastname,email) VALUES ($1,$2, $3)", firstname, lastname, email)
 
 	if err != nil {
 		fmt.Println(err)

@@ -16,5 +16,5 @@ firstname character varying(255) NOT NULL DEFAULT '',
 lastname character varying(255) NOT NULL DEFAULT '',
 avatar character varying(255) NOT NULL DEFAULT '',
 priv bigint DEFAULT 0,
-created_at timestamp NOT NULL DEFAULT now(),
-updated_at timestamp NOT NULL DEFAULT now());
+created timestamp NOT NULL DEFAULT now(),
+updated timestamp NOT NULL DEFAULT now());
