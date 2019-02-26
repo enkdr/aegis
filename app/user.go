@@ -1,13 +1,12 @@
 package app
 
 import (
-	"time"
-
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"time"
 )
 
 type User struct {
@@ -25,11 +24,7 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request, api bool) {
 	if !ok {
 		log.Fatal("No id requested")
 	}
-
-	// user := &User{}
-
 	var u User
-
 	err := app.Database.QueryRowx("SELECT firstname, created FROM account WHERE id = $1", id).
 		StructScan(&u)
 	if err != nil {
@@ -38,13 +33,17 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request, api bool) {
 	}
 
 	if api == true {
-		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(u); err != nil {
-			fmt.Printf("error: %v\n", err)
-			// panic(err)
+		js, err := json.Marshal(u)
+		if err != nil {
+			panic(err)
 		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(js)
 		return
 	}
+
+	// not api? return in a template
 	app.Tmpl.ExecuteTemplate(w, "user.tmpl", u)
 }
 
