@@ -69,8 +69,8 @@ func migrateDatabase(db *sqlx.DB) error {
 
 	migration.Log.Printf("applying database migrations")
 
-	err = migration.Force(1)
-	err = migration.Down()
+	// err = migration.Force(1)
+	// err = migration.Down()
 
 	if err != nil && err != migrate.ErrNoChange {
 		fmt.Println(err)

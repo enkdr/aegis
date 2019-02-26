@@ -52,19 +52,18 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request, api bool) {
 
 func (app *App) newUser(w http.ResponseWriter, r *http.Request) {
 
-	// vars := mux.Vars(r)
+	decoder := json.NewDecoder(r.Body)
 
-	// firstname := vars["firstname"]
-	firstname := "Dev"
-	lastname := "Enkoder"
-	email := "raphael@enkoder.com.au"
-	created := time.Now()
+	var u User
+	err := decoder.Decode(&u)
+	if err != nil {
+		panic(err)
+	}
 
-	_, err := app.Database.Exec("INSERT INTO users (firstname,lastname,email, created) VALUES ($1,$2, $3, $4)", firstname, lastname, email, created)
+	_, err = app.Database.Exec("INSERT INTO users (firstname,lastname,email, created) VALUES ($1,$2, $3, $4)", u.Firstname, u.Lastname, u.Email, time.Now())
 
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		// log.Fatal("Database insert failed")
 	}
 
 	w.WriteHeader(http.StatusOK)
