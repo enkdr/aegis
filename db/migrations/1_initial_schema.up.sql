@@ -8,7 +8,7 @@
 -- )
 -- WITH (OIDS=FALSE);
 
-CREATE TABLE IF NOT EXISTS account (
+CREATE TABLE users (
 id serial PRIMARY KEY,
 email character varying(255) NOT NULL DEFAULT '',
 password character varying(255) NOT NULL DEFAULT '',

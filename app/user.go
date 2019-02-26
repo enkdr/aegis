@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"log"
+	// "log"
 	"net/http"
 	"time"
 )
@@ -22,14 +22,17 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request, api bool) {
 	vars := mux.Vars(r)
 	id, ok := vars["id"]
 	if !ok {
-		log.Fatal("No id requested")
+		fmt.Print("error: no id in request")
+		return
 	}
 	var u User
-	err := app.Database.QueryRowx("SELECT firstname, created FROM account WHERE id = $1", id).
+	err := app.Database.QueryRowx("SELECT firstname, email, created FROM users WHERE id = $1", id).
 		StructScan(&u)
 	if err != nil {
-		fmt.Printf("error: %v\n", err)
-		// log.Fatal("Database SELECT failed")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
 	}
 
 	if api == true {
@@ -49,12 +52,15 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request, api bool) {
 
 func (app *App) newUser(w http.ResponseWriter, r *http.Request) {
 
-	firstname := "Raphael"
+	// vars := mux.Vars(r)
+
+	// firstname := vars["firstname"]
+	firstname := "Dev"
 	lastname := "Enkoder"
 	email := "raphael@enkoder.com.au"
 	created := time.Now()
 
-	_, err := app.Database.Exec("INSERT INTO account (firstname,lastname,email, created) VALUES ($1,$2, $3, $4)", firstname, lastname, email, created)
+	_, err := app.Database.Exec("INSERT INTO users (firstname,lastname,email, created) VALUES ($1,$2, $3, $4)", firstname, lastname, email, created)
 
 	if err != nil {
 		fmt.Printf("error: %v\n", err)

@@ -16,7 +16,7 @@ import (
 
 func CreateDatabase() (*sqlx.DB, error) {
 
-	connStr := "user=postgres password=dev sslmode=disable"
+	connStr := "user=dev password=dev sslmode=disable"
 
 	db, err := sqlx.Open("postgres", connStr)
 
@@ -69,8 +69,9 @@ func migrateDatabase(db *sqlx.DB) error {
 
 	migration.Log.Printf("applying database migrations")
 
-	// err = migration.Force(1)
-	// err = migration.Down()
+	err = migration.Force(1)
+	err = migration.Down()
+
 	if err != nil && err != migrate.ErrNoChange {
 		fmt.Println(err)
 		return err
