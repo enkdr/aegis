@@ -20,10 +20,10 @@ func CreateDatabase() (*sqlx.DB, error) {
 
 	db, err := sqlx.Open("postgres", connStr)
 
-	_, err = db.Exec("CREATE DATABASE aegis")
+	_, err = db.Exec("CREATE SCHEMA IF NOT EXISTS aegis")
 
 	if err != nil {
-		fmt.Printf(" CREATE DATABASE failed with error: %s\n", err)
+		fmt.Printf(" CREATE SCHEMA failed with error: %s\n", err)
 	}
 
 	if err = db.Ping(); err != nil {
@@ -69,8 +69,8 @@ func migrateDatabase(db *sqlx.DB) error {
 
 	migration.Log.Printf("applying database migrations")
 
-	err = migration.Force(1)
-	err = migration.Down()
+	// err = migration.Force(1)
+	// err = migration.Down()
 	if err != nil && err != migrate.ErrNoChange {
 		fmt.Println(err)
 		return err

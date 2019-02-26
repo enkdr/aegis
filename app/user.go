@@ -29,16 +29,19 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request, api bool) {
 	// user := &User{}
 
 	var u User
-	err := app.Database.QueryRowx("SELECT firstname FROM account WHERE id = $1", id).
+
+	err := app.Database.QueryRowx("SELECT firstname, created FROM account WHERE id = $1", id).
 		StructScan(&u)
 	if err != nil {
-		log.Fatal("Database SELECT failed")
+		fmt.Printf("error: %v\n", err)
+		// log.Fatal("Database SELECT failed")
 	}
 
 	if api == true {
 		w.WriteHeader(http.StatusOK)
 		if err := json.NewEncoder(w).Encode(u); err != nil {
-			panic(err)
+			fmt.Printf("error: %v\n", err)
+			// panic(err)
 		}
 		return
 	}
@@ -47,14 +50,16 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request, api bool) {
 
 func (app *App) newUser(w http.ResponseWriter, r *http.Request) {
 
-	firstname := "Dev"
+	firstname := "Raphael"
 	lastname := "Enkoder"
-	email := "dev@enkoder.com.au"
-	_, err := app.Database.Exec("INSERT INTO account (firstname,lastname,email) VALUES ($1,$2, $3)", firstname, lastname, email)
+	email := "raphael@enkoder.com.au"
+	created := time.Now()
+
+	_, err := app.Database.Exec("INSERT INTO account (firstname,lastname,email, created) VALUES ($1,$2, $3, $4)", firstname, lastname, email, created)
 
 	if err != nil {
-		fmt.Println(err)
-		log.Fatal("Database insert failed")
+		fmt.Printf("error: %v\n", err)
+		// log.Fatal("Database insert failed")
 	}
 
 	w.WriteHeader(http.StatusOK)
